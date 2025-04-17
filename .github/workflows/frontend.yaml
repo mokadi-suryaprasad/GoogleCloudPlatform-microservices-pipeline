@@ -93,8 +93,7 @@ jobs:
         run: |
           docker push asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/frontend:${{ github.sha }}
 
-  # ✅ Stage 4: Kubernetes YAML Update
-  k8s-update:
+  update-k8s-and-push:
     runs-on: ubuntu-latest
     needs: docker-build-push
     steps:
@@ -103,23 +102,23 @@ jobs:
         with:
           token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
 
-      - name: Update frontend image tag in deployment YAML
-        run: |
-          sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/frontend:${{ github.sha }}|" kubernetes/frontend/deploy.yaml
-          cat kubernetes/frontend/deploy.yaml
-
-  # ✅ Stage 5: Git Commit and Push
-  git-commit-push:
-    runs-on: ubuntu-latest
-    needs: k8s-update
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Configure Git and Push
+      - name: Update frontend image tag and push if changed
         run: |
           git config --global user.email "mspr9773@gmail.com"
           git config --global user.name "mokadi surya prasad"
+
+          # Update image tag
+          sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/frontend:${{ github.sha }}|" kubernetes/frontend/deploy.yaml
+          echo "Updated YAML:"
+          cat kubernetes/frontend/deploy.yaml
+
+          # Stage the file
           git add kubernetes/frontend/deploy.yaml
-          git commit -m "[CI] Update frontend image tag to ${{ github.sha }}"
-          git push
+
+          # Commit & push if there are changes
+          if git diff --cached --quiet; then
+            echo "No changes detected. Skipping commit & push."
+          else
+            git commit -m "[CI] Update frontend image tag to ${{ github.sha }}"
+            git push
+          fi
