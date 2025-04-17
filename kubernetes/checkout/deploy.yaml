@@ -31,7 +31,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: checkoutservice
-          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/checkout:c4bf75b64025c4b259228ca168701a5aa8e76b58
+          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/checkout:2e2c3817463e69217ee72a6ddf53f95f2886e76b
           imagePullPolicy: IfNotPresent
           ports:
             
@@ -81,6 +81,6 @@ spec:
           - -c
           - until nc -z -v -w30 opentelemetry-demo-kafka 9092; do echo waiting
             for kafka; sleep 2; done;
-          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/checkout:c4bf75b64025c4b259228ca168701a5aa8e76b58
+          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/checkout:2e2c3817463e69217ee72a6ddf53f95f2886e76b
           name: wait-for-kafka
       volumes:
