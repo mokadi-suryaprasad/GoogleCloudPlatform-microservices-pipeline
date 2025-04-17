@@ -1,0 +1,109 @@
+name: product-catalog-service-ci
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # ✅ 1. Unit Testing
+  unit-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+
+      - name: Build & Unit Test
+        run: |
+          cd src/product-catalog
+          go mod download
+          go build -o product-catalog-service main.go
+          go test -v ./...
+
+  # ✅ 2. Lint / Code Quality Check
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+
+      - name: Install golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2
+          golangci-lint run src/product-catalog/...
+
+  # ✅ 3. Docker Build, Trivy Scan, and Push to GAR
+  docker-build-push:
+    runs-on: ubuntu-latest
+    needs: [unit-testing, code-quality]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Configure Docker to use GAR
+        run: gcloud auth configure-docker asia-south1-docker.pkg.dev
+
+      - name: Build Docker Image
+        run: |
+          docker build -t asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }} -f src/product-catalog/Dockerfile .
+
+      - name: Trivy Vulnerability Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }}
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Push Docker Image to GAR
+        run: |
+          docker push asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }}
+
+  # ✅ 4. Update K8s Manifest with New Image
+  k8s-update:
+    runs-on: ubuntu-latest
+    needs: docker-build-push
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
+
+      - name: Update image in Kubernetes manifest
+        run: |
+          sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }}|" kubernetes/product-catalog/deployment.yaml
+          cat k8s/product-catalog/deployment.yaml
+
+  # ✅ 5. Git Commit + Push
+  commit-and-push:
+    runs-on: ubuntu-latest
+    needs: k8s-update
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Commit updated manifest
+        run: |
+          git config --global user.email "mspr9773@gmail.com"
+          git config --global user.name "mokadi surya prasad"
+          git add kubernetes/product-catalog/deployment.yaml
+          git commit -m "[CI] Update product-catalog deployment image tag"
+          git push
