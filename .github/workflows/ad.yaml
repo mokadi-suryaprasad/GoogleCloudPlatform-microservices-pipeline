@@ -14,26 +14,25 @@ on:
       - 'src/ad/**'
 
 jobs:
+  # ✅ Stage 1: Unit Testing
+  unit-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-# ✅ Stage 1: Unit Testing
-unit-testing:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
 
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
+      - name: Give Gradle permission to execute
+        run: chmod +x ./src/ad/gradlew
 
-    - name: Give Gradle permission to execute
-      run: chmod +x ./src/ad/gradlew
-
-    - name: Run unit tests with stacktrace
-      working-directory: ./src/ad
-      run: ./gradlew test --stacktrace
+      - name: Run unit tests with stacktrace
+        working-directory: ./src/ad
+        run: ./gradlew test --stacktrace
 
   # ✅ Stage 2: Code Quality
   code-quality:
@@ -73,9 +72,9 @@ unit-testing:
       - name: Give Gradle permission to execute
         run: chmod +x ./src/ad/gradlew
 
-      - name: Build Java Project
+      - name: Build Java Project with stacktrace
         working-directory: ./src/ad
-        run: ./gradlew build
+        run: ./gradlew build --stacktrace
 
   # ✅ Stage 4: Docker Build, Trivy Scan, and Push to Google Artifact Registry
   docker-build-push:
@@ -89,7 +88,7 @@ unit-testing:
         uses: docker/setup-buildx-action@v3
 
       - name: Authenticate to Google Cloud
-        uses: 'google-github-actions/auth@v2'
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
@@ -132,8 +131,10 @@ unit-testing:
     runs-on: ubuntu-latest
     needs: k8s-update
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
 
       - name: Configure Git and Push
         run: |
