@@ -14,25 +14,26 @@ on:
       - 'src/ad/**'
 
 jobs:
-  # ✅ Stage 1: Unit Testing
-  unit-testing:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-      
-      - name: Give Gradle permission to execute
-        run: chmod +x ./src/ad/gradlew
-      
-      - name: Run unit tests
-        working-directory: ./src/ad
-        run: ./gradlew test
+
+# ✅ Stage 1: Unit Testing
+unit-testing:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Give Gradle permission to execute
+      run: chmod +x ./src/ad/gradlew
+
+    - name: Run unit tests with stacktrace
+      working-directory: ./src/ad
+      run: ./gradlew test --stacktrace
 
   # ✅ Stage 2: Code Quality
   code-quality:
