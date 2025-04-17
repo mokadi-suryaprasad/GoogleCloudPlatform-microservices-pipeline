@@ -7,11 +7,11 @@ on:
     paths:
       - '.github/workflows/frontend.yaml'
       - 'src/frontend/**'
-  pull_request_target:
-    branches: [main]
-    paths:
-      - '.github/workflows/frontend.yaml'
-      - 'src/frontend/**'
+  # pull_request_target:
+  #   branches: [main]
+  #   paths:
+  #     - '.github/workflows/frontend.yaml'
+  #     - 'src/frontend/**'
 
 jobs:
   # ✅ Stage 1: Unit Testing

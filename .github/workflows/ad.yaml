@@ -7,11 +7,11 @@ on:
     paths:
       - '.github/workflows/checkout.yaml'
       - 'src/checkout/**'
-  pull_request_target:
-    branches: [main]
-    paths:
-      - '.github/workflows/checkout.yaml'
-      - 'src/checkout/**'
+  # pull_request_target:
+  #   branches: [main]
+  #   paths:
+  #     - '.github/workflows/checkout.yaml'
+  #     - 'src/checkout/**'
 
 jobs:
   # ✅ Stage 1: Unit Testing
