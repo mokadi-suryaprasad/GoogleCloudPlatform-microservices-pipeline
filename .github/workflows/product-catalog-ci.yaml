@@ -3,8 +3,8 @@ name: product-catalog-service-ci
 on:
   push:
     paths:
-      - '.github/workflows/checkout.yaml'
-      - 'src/checkout/**'
+      - '.github/workflows/product-catalog-ci.yaml'
+      - 'src/productcatalog/**'
   #pull_request:
     #branches: [main]
 
