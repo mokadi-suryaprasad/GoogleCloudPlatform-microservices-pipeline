@@ -31,7 +31,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: productcatalogservice
-          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice@sha256:24b91267c70fc8b7e1b77fa3cf771de9a1c36adf3ff3d9194c117e5c0db68ef9
+          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:5889eba20c59a373bd3aa4299f4c551c6fa56555
           imagePullPolicy: IfNotPresent
           ports:
             
