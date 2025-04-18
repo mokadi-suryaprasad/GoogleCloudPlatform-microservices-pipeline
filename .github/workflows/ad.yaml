@@ -54,12 +54,10 @@ jobs:
         run: ./gradlew verifyGoogleJavaFormat
         continue-on-error: true
 
-
-
   # ✅ Stage 3: Docker Build, Trivy Scan, and Push to Google Artifact Registry
   docker-build-push:
     runs-on: ubuntu-latest
-    needs: code-build
+    needs: code-quality  # Now depends on the code-quality job
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
