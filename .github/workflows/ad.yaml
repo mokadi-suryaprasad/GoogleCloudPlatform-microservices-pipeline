@@ -105,7 +105,7 @@ jobs:
           git config --global user.name "mokadi surya prasad"
 
           sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/ad:${{ github.sha }}|" kubernetes/ad/deploy.yaml
-          
+
           git add kubernetes/ad/deploy.yaml
 
           # Commit only if there are actual changes
