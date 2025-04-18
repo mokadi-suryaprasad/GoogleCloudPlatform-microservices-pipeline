@@ -50,11 +50,11 @@ jobs:
           go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56.2
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
-      - name: Run golangci-lint with ignore flags
+      - name: Run golangci-lint with config file
         working-directory: ./src/checkout
         run: |
             go mod tidy
-            golangci-lint run ./... --timeout 5m --disable errcheck --disable gosimple
+            golangci-lint run --config .golangci.yml --timeout 5m
 
   # ✅ Stage 4: Docker Build, Trivy Scan, and Push to Google Artifact Registry
   docker-build-push:
