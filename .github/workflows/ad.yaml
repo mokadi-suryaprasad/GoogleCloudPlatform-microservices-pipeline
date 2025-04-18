@@ -72,9 +72,9 @@ jobs:
       - name: Give Gradle permission to execute
         run: chmod +x ./src/ad/gradlew
 
-      - name: Build Java Project with stacktrace
+      - name: Build Java Project with debug flags
         working-directory: ./src/ad
-        run: ./gradlew build --stacktrace
+        run: ./gradlew build --stacktrace --info --warning-mode all
 
   # ✅ Stage 4: Docker Build, Trivy Scan, and Push to Google Artifact Registry
   docker-build-push:
