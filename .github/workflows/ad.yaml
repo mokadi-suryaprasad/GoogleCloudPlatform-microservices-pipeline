@@ -118,3 +118,4 @@ jobs:
             git push
           else
             echo "No changes detected in deploy.yaml. Skipping commit and push."
+          fi  # <-- Missing 'fi' to close the 'if' block
