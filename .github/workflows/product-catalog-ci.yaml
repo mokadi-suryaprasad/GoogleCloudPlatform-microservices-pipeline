@@ -77,7 +77,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }} -f src/product-catalog/Dockerfile .
+          docker build -t asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }} -f src/product-catalog/ .
 
       - name: Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
@@ -107,7 +107,7 @@ jobs:
           git config --global user.name "mokadi surya prasad"
 
           # Update image
-          sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }}|" kubernetes/product-catalog/deployment.yaml
+          sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }}|" kubernetes/productcatalog/deployment.yaml
           echo "Updated Manifest:"
           cat kubernetes/product-catalog/deployment.yaml
 
