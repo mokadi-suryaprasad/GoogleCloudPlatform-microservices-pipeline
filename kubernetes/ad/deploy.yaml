@@ -31,7 +31,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: adservice
-          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/ad@sha256:17f7e494270351dceeb94533f3403a53b3ed010f5988afa1f1d86502d5c7e5f7
+          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/ad:c5cb851467ff300796d8da4b1002ad548f8d2ba0
           imagePullPolicy: IfNotPresent
           ports:
             
