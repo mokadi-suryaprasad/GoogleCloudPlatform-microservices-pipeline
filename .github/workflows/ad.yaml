@@ -32,7 +32,7 @@ jobs:
 
       - name: Run unit tests with stacktrace
         working-directory: ./src/ad
-        run: ./gradlew build --warning-mode all
+        run: ./gradlew test
 
   # ✅ Stage 2: Code Quality
   code-quality:
