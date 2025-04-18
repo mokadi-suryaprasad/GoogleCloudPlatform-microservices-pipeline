@@ -77,8 +77,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }} \ -f src/product-catalog/Dockerfile \ src/product-catalog/
-
+          docker build -t asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }} -f src/product-catalog/Dockerfile src/product-catalog/
       - name: Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@master
         with:
