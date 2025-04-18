@@ -50,23 +50,6 @@ jobs:
           go mod tidy
           golangci-lint run ./... --timeout 5m
 
-  # ✅ Stage 3: Code Build (Binary Build)
-  code-build:
-    runs-on: ubuntu-latest
-    needs: [unit-testing, code-quality]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.22
-
-      - name: Build Go binary
-        run: |
-          cd src/checkout
-          go build -o checkout main.go
 
   # ✅ Stage 4: Docker Build, Trivy Scan, and Push to Google Artifact Registry
   docker-build-push:

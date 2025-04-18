@@ -31,7 +31,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: checkoutservice
-          image: neamulkabiremon/checkout:257011939658a68c06c3ff412f74181981c5341a
+          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/checkout:257011939658a68c06c3ff412f74181981c5341a
           imagePullPolicy: IfNotPresent
           ports:
             

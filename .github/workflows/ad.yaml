@@ -1,17 +1,17 @@
-name: ad-service-ci
+name: checkout-service-ci
 
 on:
   pull_request:
     branches: [main]
   push:
     paths:
-      - '.github/workflows/ad.yaml'
-      - 'src/ad/**'
+      - '.github/workflows/checkout.yaml'
+      - 'src/checkout/**'
   pull_request_target:
     branches: [main]
     paths:
-      - '.github/workflows/ad.yaml'
-      - 'src/ad/**'
+      - '.github/workflows/checkout.yaml'
+      - 'src/checkout/**'
 
 jobs:
   # ✅ Stage 1: Unit Testing
@@ -21,39 +21,39 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          go-version: 1.22
 
-      - name: Give Gradle permission to execute
-        run: chmod +x ./src/ad/gradlew
+      - name: Run Unit Tests
+        working-directory: ./src/checkout
+        run: |
+          go mod download
+          go test -v ./...
 
-      - name: Run unit tests
-        working-directory: ./src/ad
-        run: ./gradlew test
-
-  # ✅ Stage 2: Code Quality
+  # ✅ Stage 2: Code Quality with golangci-lint
   code-quality:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          go-version: 1.22
 
-      - name: Give Gradle permission to execute
-        run: chmod +x ./src/ad/gradlew
+      - name: Install golangci-lint
+        run: |
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56.2
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
-      - name: Run Google Java Format Check
-        working-directory: ./src/ad
-        run: ./gradlew verifyGoogleJavaFormat
-        continue-on-error: true
+      - name: Run golangci-lint
+        working-directory: ./src/checkout
+        run: |
+          go mod tidy
+          golangci-lint run ./... --timeout 5m
 
   # ✅ Stage 3: Docker Build, Trivy Scan, and Push to Google Artifact Registry
   docker-build-push:
@@ -76,20 +76,19 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/ad:${{ github.sha }} -f src/ad/Dockerfile ./src/ad
+          docker build -t asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/checkout:${{ github.sha }} -f src/checkout/Dockerfile .
 
       - name: Scan Docker Image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/ad:${{ github.sha }}
+          image-ref: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/checkout:${{ github.sha }}
           format: table
-          exit-code: '0'
+          exit-code: '1'
           ignore-unfixed: true
-          vulnerability-type: 'os,library'
 
       - name: Push Docker Image to GAR
         run: |
-          docker push asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/ad:${{ github.sha }}
+          docker push asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/checkout:${{ github.sha }}
 
   # ✅ Stage 4: Update Kubernetes YAML and Push if Changed
   update-and-push-k8s:
@@ -101,21 +100,21 @@ jobs:
         with:
           token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
 
-      - name: Update ad-service image tag and push if changed
+      - name: Update checkout-service image tag and push if changed
         run: |
           git config --global user.email "mspr9773@gmail.com"
           git config --global user.name "mokadi surya prasad"
 
           # Update the image tag in deploy.yaml
-          sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/ad:${{ github.sha }}|" kubernetes/ad/deploy.yaml
+          sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/checkout:${{ github.sha }}|" kubernetes/checkout/deploy.yaml
 
           # Add changes
-          git add kubernetes/ad/deploy.yaml
+          git add kubernetes/checkout/deploy.yaml
 
           # Commit only if there are actual changes
           if ! git diff --cached --quiet; then
-            git commit -m "[CI] Update ad image tag to ${{ github.sha }}"
+            git commit -m "[CI] Update checkout image tag to ${{ github.sha }}"
             git push
           else
             echo "No changes detected in deploy.yaml. Skipping commit and push."
-          fi  # <-- Missing 'fi' to close the 'if' block
+          fi
