@@ -5,8 +5,8 @@ on:
     paths:
       - '.github/workflows/checkout.yaml'
       - 'src/checkout/**'
-  pull_request:
-    branches: [main]
+  #pull_request:
+    #branches: [main]
 
 jobs:
   # ✅ Stage 1: Unit Testing

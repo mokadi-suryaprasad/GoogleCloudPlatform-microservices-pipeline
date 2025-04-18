@@ -123,5 +123,3 @@ jobs:
           git add kubernetes/frontend/deploy.yaml
           git commit -m "[CI] Update frontend image tag to ${{ github.sha }}"
           git push
-
-
