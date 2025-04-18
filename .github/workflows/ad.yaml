@@ -105,7 +105,7 @@ jobs:
           sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/ad:${{ github.sha }}|" kubernetes/ad/deploy.yaml
           cat kubernetes/ad/deploy.yaml
 
-  # ✅ Stage 5: Commit and Push Updated K8s Manifest
+    # ✅ Stage 5: Commit and Push Updated K8s Manifest
   git-commit-push:
     runs-on: ubuntu-latest
     needs: k8s-update
@@ -120,7 +120,10 @@ jobs:
           git config --global user.email "mspr9773@gmail.com"
           git config --global user.name "mokadi surya prasad"
           git add kubernetes/ad/deploy.yaml
-          git commit -m "[CI] Update ad image tag to ${{ github.sha }}"
-          git push
 
-###
+          # Commit only if there are actual changes
+          if ! git diff --cached --quiet; then
+            git commit -m "[CI] Update ad image tag to ${{ github.sha }}"
+            git push
+          else
+            echo "No changes detected in deploy.yaml. Skipping commit and push."
