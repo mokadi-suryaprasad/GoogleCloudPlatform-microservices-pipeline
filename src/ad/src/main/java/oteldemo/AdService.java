@@ -47,6 +47,7 @@ import dev.openfeature.sdk.MutableContext;
 import dev.openfeature.sdk.OpenFeatureAPI;
 import java.util.UUID;
 
+
 public final class AdService {
 
   private static final Logger logger = LogManager.getLogger(AdService.class);

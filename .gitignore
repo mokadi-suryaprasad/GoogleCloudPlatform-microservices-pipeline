@@ -1,28 +1,89 @@
-.DS_Store
-.eclipse.buildship.core.prefs
-.gradle/
-.idea/
-.kubernetes-manifests-*/
-.project
-.skaffold-*.yaml
-.terraform.lock.hcl
-.terraform/*
-.venv/
-.vs/
-.vscode/
+*~
 *.iml
 *.ipr
 *.iws
 *.pyc
-*.swp
-*.tfstate*
-*.tfvars
-*~
+.nb-gradle
+.nb-gradle-properties
+.swp
+.DS_Store
+\#*\#
+
+docker-compose.override.yml
+
+# Eclipse
+.classpath
+.project
+.settings
+
 bin/
-build/
-Dockerfile.pip
-node_modules/
 obj/
-pkg/
-release/wi-kubernetes-manifests.yaml
+.vs/
+.vscode
+.gradle/
+.idea/
+build/
+node_modules/
+coverage
+.next/
+out/
+build
+next-env.d.ts
 vendor/
+composer.lock
+.venv
+.dockerhub.env
+.ghcr.env
+
+src/frontend/cypress/videos
+src/frontend/cypress/screenshots
+src/shipping/target/
+test/tracetesting/tracetesting-vars.yaml
+
+# Ignore copied/generated protobuf files
+/src/accounting/src/protos/
+/src/cart/src/protos/
+/src/fraud-detection/src/main/proto
+/src/frontend/pb/
+/src/frontend/protos/
+/src/payment/demo.proto
+/src/shipping/proto/
+/src/currency/proto
+
+# Android
+*.apk
+
+!src/currency/build
+
+# -----------------------------
+# Terraform
+# -----------------------------
+**/.terraform/                # Terraform plugins and provider binaries
+**/.terraform.lock.hcl        # Dependency lock file (optional: only ignore if not needed)
+**/*.tfstate                  # Terraform state files
+**/*.tfstate.backup           # State backup
+**/*.tfplan                   # Terraform plan files
+**/crash.log                  # Crash logs
+
+# -----------------------------
+# Local Environment
+# -----------------------------
+*.log
+*.bak
+*.swp
+.DS_Store
+
+# -----------------------------
+# VSCode and IDEs
+# -----------------------------
+.vscode/
+.idea/
+*.code-workspace
+
+**/.terraform/
+
+
+infrastructure/eks-cluster/.terraform/
+infrastructure/eks-cluster/terraform.tfstate
+infrastructure/eks-cluster/terraform.tfstate.backup
+*.tfplan
