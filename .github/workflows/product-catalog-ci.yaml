@@ -108,13 +108,13 @@ jobs:
           # Update image
           sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }}|" kubernetes/productcatalog/deployment.yaml
           echo "Updated Manifest:"
-          cat kubernetes/product-catalog/deployment.yaml
+          cat kubernetes/productcatalog/deployment.yaml
 
           # Commit only if there are changes
-          git add kubernetes/product-catalog/deployment.yaml
+          git add kubernetes/productcatalog/deployment.yaml
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "[CI] Update product-catalog deployment image tag"
+            git commit -m "[CI] Update productcatalog deployment image tag"
             git push
           fi
