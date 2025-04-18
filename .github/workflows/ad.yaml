@@ -122,3 +122,5 @@ jobs:
           git add kubernetes/ad/deploy.yaml
           git commit -m "[CI] Update ad image tag to ${{ github.sha }}"
           git push
+
+###
