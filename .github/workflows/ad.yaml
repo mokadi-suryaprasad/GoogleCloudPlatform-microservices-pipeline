@@ -19,20 +19,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-      
+
       - name: Give Gradle permission to execute
         run: chmod +x ./src/ad/gradlew
-      
+
       - name: Run unit tests
         working-directory: ./src/ad
         run: ./gradlew test
-
 
   # ✅ Stage 2: Code Quality
   code-quality:
@@ -54,6 +53,27 @@ jobs:
         working-directory: ./src/ad
         run: ./gradlew verifyGoogleJavaFormat
         continue-on-error: true
+
+  # ✅ Stage 3: Code Build (previously missing)
+  code-build:
+    runs-on: ubuntu-latest
+    needs: [unit-testing, code-quality]  # Adding dependencies to ensure build runs after testing and quality checks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Give Gradle permission to execute
+        run: chmod +x ./src/ad/gradlew
+
+      - name: Build Java Project with debug flags
+        working-directory: ./src/ad
+        run: ./gradlew build --stacktrace --info --warning-mode all
 
   # ✅ Stage 4: Docker Build, Trivy Scan, and Push to Google Artifact Registry
   docker-build-push:
