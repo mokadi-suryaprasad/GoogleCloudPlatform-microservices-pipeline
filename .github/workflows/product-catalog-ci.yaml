@@ -106,12 +106,12 @@ jobs:
           git config --global user.name "mokadi surya prasad"
 
           # Update image
-          sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }}|" kubernetes/productcatalog/deployment.yaml
+          sed -i "s|image: .*|image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/productcatalogservice:${{ github.sha }}|" kubernetes/productcatalog/deploy.yaml
           echo "Updated Manifest:"
-          cat kubernetes/productcatalog/deployment.yaml
+          cat kubernetes/productcatalog/deploy.yaml
 
           # Commit only if there are changes
-          git add kubernetes/productcatalog/deployment.yaml
+          git add kubernetes/productcatalog/deploy.yaml
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else
