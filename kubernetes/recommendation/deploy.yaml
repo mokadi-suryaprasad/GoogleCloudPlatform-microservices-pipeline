@@ -31,7 +31,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
         - name: recommendationservice
-          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/recommendationservice:963d0f438b40369fa5a21e9f0bac9581b85171bc
+          image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/recommendationservice:9d311e1578db04bc6835b0b6247108bd185cfafd
           imagePullPolicy: IfNotPresent
           ports:
             
