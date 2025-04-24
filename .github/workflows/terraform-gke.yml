@@ -1,80 +1,29 @@
-name: Terraform GKE on Google Cloud
+name: Terraform Destroy GKE Resources
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/terraform-gke.yml'
-      - 'terraform-gke/**'
   workflow_dispatch:
     inputs:
-      action:
-        description: 'Terraform action to perform'
+      confirm_destroy:
+        description: "Type 'yes' to confirm destruction"
         required: true
-        default: 'destroy'
-        type: choice
-        options:
-          - apply
-          - destroy
+        default: 'yes'
 
 jobs:
-  terraform:
-    name: Terraform Deployment and Management
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply' || github.event_name == 'push'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.5.6"
-
-      - name: Set up Google Cloud credentials
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: "silken-oxygen-454215-v6"
-          export_default_credentials: true
-
-      - name: Terraform Init
-        working-directory: ./terraform-gke
-        run: terraform init
-
-      - name: Terraform Validate
-        working-directory: ./terraform-gke
-        run: terraform validate
-
-      - name: Terraform Plan
-        working-directory: ./terraform-gke
-        run: terraform plan
-
-      - name: Terraform Apply
-        working-directory: ./terraform-gke
-        run: terraform apply -auto-approve
-
   terraform-destroy:
-    name: Terraform Destroy
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
+    name: Destroy GKE Terraform Resources
+    if: github.event.inputs.confirm_destroy == 'yes'
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.5.6"
+          terraform_version: '1.5.6'
 
-      - name: Set up Google Cloud credentials
+      - name: Set up Google Cloud Credentials
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
@@ -89,7 +38,7 @@ jobs:
         working-directory: ./terraform-gke
         run: terraform init
 
-      - name: Terraform Plan (Destroy)
+      - name: Terraform Destroy Plan
         working-directory: ./terraform-gke
         run: terraform plan -destroy
 
