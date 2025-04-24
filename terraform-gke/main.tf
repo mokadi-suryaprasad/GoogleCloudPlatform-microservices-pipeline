@@ -35,7 +35,7 @@ terraform {
 }
 
 module "vpc" {
-  source               = "../modules/vpc"
+  source               = "./modules/vpc"
   vpc_name             = var.vpc_name
   region               = local.region
   public_subnet        = var.public_subnet
@@ -46,7 +46,7 @@ module "vpc" {
 
 
 module "gke" {
-  source              = "../modules/gke"
+  source              = "./modules/gke"
   project_id          = local.project_id
   gke_cluster_name    = var.cluster_name
   gke_cluster_region  = local.region
