@@ -7,12 +7,10 @@ resource "google_compute_network" "vpc" {
   depends_on = [google_project_service.api]
 }
 
-# Remove this route to make the VPC fully private.
-# You need this route for the NAT gateway.
 resource "google_compute_route" "default_route" {
   name             = "default-route"
   dest_range       = "0.0.0.0/0"
-  network          = google_compute_network.vpc.name
+  network          = google_compute_network.vpc.self_link
   next_hop_gateway = "default-internet-gateway"
 }
 
@@ -27,7 +25,7 @@ resource "google_compute_subnetwork" "public" {
 
 resource "google_compute_subnetwork" "private" {
   name                     = var.private_subnet
-  ip_cidr_range            =  var.private_subnet_cidrs
+  ip_cidr_range            = var.private_subnet_cidrs
   region                   = var.region
   network                  = google_compute_network.vpc.id
   private_ip_google_access = true
@@ -68,14 +66,14 @@ resource "google_compute_router_nat" "nat" {
   nat_ips                            = [google_compute_address.nat.self_link]
 
   subnetwork {
-    name                    = google_compute_subnetwork.private.self_link
+    name                    = google_compute_subnetwork.private.name
     source_ip_ranges_to_nat = ["ALL_IP_RANGES"]
   }
 }
 
 resource "google_compute_firewall" "allow_iap_ssh" {
   name    = "allow-iap-ssh"
-  network = google_compute_network.vpc.name
+  network = google_compute_network.vpc.id
 
   allow {
     protocol = "tcp"
@@ -84,3 +82,5 @@ resource "google_compute_firewall" "allow_iap_ssh" {
 
   source_ranges = ["35.235.240.0/20"]
 }
+
+

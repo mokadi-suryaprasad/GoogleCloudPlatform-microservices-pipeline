@@ -9,9 +9,6 @@ resource "google_container_cluster" "gke" {
 
   deletion_protection = false
 
-  # Optional, if you want multi-zonal cluster
-  # node_locations = ["us-central1-b"]
-
   addons_config {
     http_load_balancing {
       disabled = true
@@ -36,17 +33,9 @@ resource "google_container_cluster" "gke" {
 
   private_cluster_config {
     enable_private_nodes    = true
-    enable_private_endpoint = false
+    enable_private_endpoint = true  # Enable master endpoint for private access
     master_ipv4_cidr_block  = "192.168.0.0/28"
   }
-
-  # Jenkins use case
-  # master_authorized_networks_config {
-  #   cidr_blocks {
-  #     cidr_block   = "10.0.0.0/18"
-  #     display_name = "private-subnet"
-  #   }
-  # }
 }
 
 resource "google_service_account" "gke" {
@@ -86,12 +75,6 @@ resource "google_container_node_pool" "general" {
     labels = {
       role = "general"
     }
-
-    # taint {
-    #   key    = "instance_type"
-    #   value  = "spot"
-    #   effect = "NO_SCHEDULE"
-    # }
 
     service_account = google_service_account.gke.email
     oauth_scopes = [

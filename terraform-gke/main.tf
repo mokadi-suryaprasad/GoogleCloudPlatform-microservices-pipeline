@@ -51,6 +51,7 @@ module "gke" {
   gke_cluster_name    = var.cluster_name
   gke_cluster_region  = local.region
   vpc_id              = module.vpc.vpc_id
-  subnet_id           = module.vpc.private_subnet
+  subnet_id           = module.vpc.private_subnet_id
 }
+
 
