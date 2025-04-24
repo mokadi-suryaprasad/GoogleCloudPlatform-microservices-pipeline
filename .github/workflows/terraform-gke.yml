@@ -1,6 +1,12 @@
-name: Terraform Destroy GKE Resources
+name: Terraform GKE on Google Cloud
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/terraform-gke.yml'
+      - 'terraform-gke/**'
   workflow_dispatch:
     inputs:
       confirm_destroy:
