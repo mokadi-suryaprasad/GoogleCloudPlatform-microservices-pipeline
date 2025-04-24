@@ -1,0 +1,27 @@
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+.crc
+.terraform.lock.hcl
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Secrets and Credentials
+username.txt
+password.txt
+.env
+*.pem
+*.key
+
+# Logs and Outputs
+*.log
+*.out
+*.tmp
+
+# Kubernetes specific
+.kube/

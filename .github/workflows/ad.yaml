@@ -1,8 +1,8 @@
 name: checkout-service-ci
 
 on:
-  pull_request:
-    branches: [main]
+  # pull_request:
+  #   branches: [main]
   push:
     paths:
       - '.github/workflows/checkout.yaml'
