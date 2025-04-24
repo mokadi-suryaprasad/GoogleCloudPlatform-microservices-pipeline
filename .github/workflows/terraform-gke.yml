@@ -18,7 +18,7 @@ on:
           - apply
           - destroy
 
-jobs:
+# jobs:
   # terraform:
   #   name: Terraform Deployment and Management
   #   runs-on: ubuntu-latest
