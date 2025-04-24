@@ -12,13 +12,13 @@ on:
       confirm_destroy:
         description: "Type 'yes' to confirm destruction"
         required: true
-        default: 'yes'
+        default: 'no'
 
 jobs:
   terraform-destroy:
     name: Destroy GKE Terraform Resources
-    if: github.event.inputs.confirm_destroy == 'yes'
     runs-on: ubuntu-latest
+    if: github.event.inputs.confirm_destroy == 'yes'  # Ensure it's only triggered when 'yes' is entered
 
     steps:
       - name: Checkout Code
