@@ -12,7 +12,7 @@ on:
       confirm_destroy:
         description: "Type 'yes' to confirm destruction"
         required: true
-        default: 'no'
+        default: 'yes'
 
 jobs:
   terraform-destroy:
