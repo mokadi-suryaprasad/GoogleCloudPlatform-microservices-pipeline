@@ -31,7 +31,7 @@ spec:
       serviceAccountName: opentelemetry-demo
       containers:
       - name: frontend
-        image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/frontend@sha256:21c469af88d9dc970dedf40ce544d06ce5c2f33792a74b9b716789fb76bb5350
+        image: asia-south1-docker.pkg.dev/silken-oxygen-454215-v6/microservices-demo/frontend@sha256:12c394da6f0023d8af0c794a9920c31339d2ac21fc290262f5cf6b3d00fa5f3f
         ports:
 
         - containerPort: 8080
